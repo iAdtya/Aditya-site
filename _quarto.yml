@@ -1,0 +1,39 @@
+project:
+  type: website
+
+ipynb-filters:
+  - quarto_filter.py
+
+execute:
+  eval: false
+
+website:
+  title: "Aditya's Blog"
+  site-url: "https://your-site-url.com"
+  page-footer:
+    center:
+      - icon: linkedin
+        href: https://www.linkedin.com/in/aditya-khedekar-96b110202/
+      - icon: twitter
+        href: https://x.com/Aditya38763529
+      - icon: github
+        href: https://github.com/iAdtya
+
+  description: "A collection of blogs and talks on machine learning and data science."
+
+  navbar:
+    title: false
+    background: dark
+    pinned: true
+    collapse: false
+    left:
+      - text: "Blog"
+        href: index.qmd
+      - text: "Hire"
+        href: _hire.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true

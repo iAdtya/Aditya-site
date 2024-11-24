@@ -1,0 +1,48 @@
+---
+title: "Applied AI Consulting"
+sidebar: false
+image: quarto.png
+aliases: ["hire/", "hire"]
+format:
+  html:
+    anchor-sections: true
+---
+
+## About
+
+I am a machine learning engineer [experience](https://www.linkedin.com/in/aditya-khedekar-96b110202). I have worked with innovative companies and Products, which included. I am currently an independent consultant helping companies operationalize Large Language Models (LLMs) to accelerate their AI product journey.
+
+## Problems I Solve
+
+You should consider hiring me if ...
+
+-   You don’t know how to improve your LLM products systematically.
+-   Your LLMs need to be cheaper or faster.
+-   You are overwhelmed by tools & frameworks.
+-   Feel lost on what to prioritize and what experiments you should run.
+-   Need outside expertise to evaluate your needs and vet potential talent.
+
+## Services
+
+I offer two tiers of services to support your goals.
+
+### Tier 1: Strategy
+
+I will advise you on the following topics:
+
+-   LLM performance issues: (cost, quality, speed)
+-   Custom Evaluation Systems
+-   RAG, Fine-Tuning, and Prompt Engineering
+-   Strategy & Hiring: I will introduce you to talent, vendors, and partners in my network.
+
+I'll give you ongoing feedback and guidance via regular meetings with your team. This will help you avoid common pitfalls and select the right tools and techniques, saving you time and money. 
+
+
+### Pricing
+
+I work on a monthly retainer basis. The cost depends on the tier of service you choose:
+
+- Consulting: $1000/month
+
+Contact me at `adityakhedekar9906@gmail.com` to discuss starting an engagement. I can also provide custom pricing for longer engagements or specific projects.
+

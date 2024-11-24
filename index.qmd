@@ -1,0 +1,49 @@
+---
+sidebar: false
+description: "A collection of technical blogs and talks on machine learning and data science."
+image: quarto.png
+toc: true
+listing:
+  date-format: short
+  feed: true
+  filter-ui: true
+  type: table
+  sort-ui: false
+  sort: "date desc"
+  categories: false
+  fields: [date, title]
+  id: blog-listings
+  contents: [blog/Deep-RL/index.md]
+aliases: ["blog/"]
+format:
+  html:
+    anchor-sections: true
+---
+
+::: {layout="[21,79]" .profile-header}
+
+![](profile.png){.profile-pic}
+
+I am a machine learning engineer [experience](https://www.linkedin.com/in/aditya-khedekar-96b110202). I have worked with innovative companies and Products, which included. I am currently an independent consultant helping companies operationalize Large Language Models (LLMs) to accelerate their AI product journey.
+
+:::
+
+## 💼 Work With Me
+
+Do you need help operationalizing AI and large language models? I’m open to new consulting work and other forms of advisory. If you need help with your project lets chat [Calendly](https://calendly.com/adityakhedekar/30min)  OR   [Email me](mailto:adityakhedekar98906@gmail.com)
+
+---
+
+## 📮 Feed
+
+I often share my experience building AI products. Below is a selected assortment of my longer-form writing on my machine learning work.
+
+
+
+::: {#blog-listings}
+:::
+
+## 📬 Follow Me
+
+You can subscribe to my blog via the button below.  I’m also active on [Twitter](https://x.com/Aditya38763529).
+

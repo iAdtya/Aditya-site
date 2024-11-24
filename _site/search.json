@@ -1,0 +1,121 @@
+[
+  {
+    "objectID": "index.html#work-with-me",
+    "href": "index.html#work-with-me",
+    "title": "Aditya's Blog",
+    "section": "💼 Work With Me",
+    "text": "💼 Work With Me\nDo you need help operationalizing AI and large language models? I’m open to new consulting work and other forms of advisory. If you need help with your project lets chat Calendly OR Email me"
+  },
+  {
+    "objectID": "index.html#feed",
+    "href": "index.html#feed",
+    "title": "Aditya's Blog",
+    "section": "📮 Feed",
+    "text": "📮 Feed\nI often share my experience building AI products. Below is a selected assortment of my longer-form writing on my machine learning work.\n\n\n    \n      \n      \n    \n\n\n\n\n\nDate\n\n\nTitle\n\n\n\n\n\n\n11/7/24\n\n\nCpu-Scheduling-Deep-Reinforcement-learning\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "index.html#follow-me",
+    "href": "index.html#follow-me",
+    "title": "Aditya's Blog",
+    "section": "📬 Follow Me",
+    "text": "📬 Follow Me\nYou can subscribe to my blog via the button below. I’m also active on Twitter."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "blog/Deep-RL/index.html",
+    "href": "blog/Deep-RL/index.html",
+    "title": "Cpu-Scheduling-Deep-Reinforcement-learning",
+    "section": "",
+    "text": "Project Overview\n  Key Components\n  \n  Proximal Policy Optimization (PPO)\n  Custom Gym Environment\n  Probability and Action Selection with Multivariate Normal Distribution\n  Priority Assignment and Queueing\n  Reward Model\n  \n  PPO Class\n  \n  Neural Network Architecture"
+  },
+  {
+    "objectID": "blog/Deep-RL/index.html#key-components",
+    "href": "blog/Deep-RL/index.html#key-components",
+    "title": "Cpu-Scheduling-Deep-Reinforcement-learning",
+    "section": "Key Components",
+    "text": "Key Components\nThe following sections detail the main components of the project, from the PPO algorithm and custom Gym environment to the training process and model components.\n\nProximal Policy Optimization (PPO)\nPPO is a popular DRL algorithm known for balancing sample efficiency with stability. It employs a clipped surrogate objective that prevents large policy updates, enabling stable learning. Here, PPO is central to optimizing scheduling policy, fine-tuning process priorities to minimize turnaround time.\n\n\nCustom Gym Environment\nA custom Gym environment (PrioritySchedulerEnv) was developed to provide a controlled setting for training the scheduling model. This environment manages processes based on their arrival time and instruction count, prioritizing them dynamically during runtime. Processes are assigned priorities from 0 to 10, reshuffled in a priority queue, and executed accordingly.\nThe project implements a custom Gymnasium environment (PrioritySchedulerEnv) that simulates a priority-based process scheduler. Key features include:\n\nObservation Space: A matrix of shape (encoder_context + 1, 5) representing:\n\nCurrent process information (PID, arrival time, total instructions, remaining instructions)\nPriority queue state for context\n\nAction Space: Discrete actions representing priority levels (0 to max_priority-1)\nReward Function: 100 * completed_processes - sum(turnaround_times)\n\nBalances throughput (completed processes) with turnaround time optimization\n\n\n\n\nProbability and Action Selection with Multivariate Normal Distribution\nIn this project, PPO models policy distributions over actions, allowing for probability-based action selection. A multivariate normal distribution is applied to the action space, leveraging a covariance matrix to encourage diverse actions while maintaining stability.\n\n\nPriority Assignment and Queueing\nProcesses are assigned priorities (0-10) that determine their positions in the priority queue. This priority directly influences execution order, allowing the model to adaptively reshuffle processes for optimal performance based on real-time feedback.\n\n\nReward Model\nThe reward model in this environment incentivizes quick completion of processes. Rewards are structured as:\n\nPositive Reward: Granted for completed processes.\nPenalty: Incurred based on the sum of turnaround times for completed processes.\n\nThe PPO model’s objective is to maximize positive rewards while minimizing penalties, ultimately optimizing scheduling."
+  },
+  {
+    "objectID": "blog/Deep-RL/index.html#code-implementation",
+    "href": "blog/Deep-RL/index.html#code-implementation",
+    "title": "Cpu-Scheduling-Deep-Reinforcement-learning",
+    "section": "Code Implementation",
+    "text": "Code Implementation\nimport numpy as np import torch import gymnasium as gym from torch.distributions import MultivariateNormal from torch.optim import Adam from torch.nn import MSELoss import wandb from neural_network import FeedForwardNN"
+  },
+  {
+    "objectID": "blog/Deep-RL/index.html#introduction",
+    "href": "blog/Deep-RL/index.html#introduction",
+    "title": "Cpu-Scheduling-Deep-Reinforcement-learning",
+    "section": "Introduction",
+    "text": "Introduction\nThis article explores a Deep Reinforcement Learning (DRL) implementation for process scheduling using the Proximal Policy Optimization (PPO) algorithm. The project combines modern DRL techniques with traditional operating system concepts to create an intelligent priority scheduler that can learn optimal scheduling strategies from experience."
+  },
+  {
+    "objectID": "blog/Deep-RL/index.html#system-architecture",
+    "href": "blog/Deep-RL/index.html#system-architecture",
+    "title": "Cpu-Scheduling-Deep-Reinforcement-learning",
+    "section": "System Architecture",
+    "text": "System Architecture\n\nEnvironment Design\n\n\nNeural Network Architecture\nThe implementation uses a feed-forward neural network with the following structure:\nLayer 1: Linear(in_dim, 64) -&gt; ReLU\nLayer 2: Linear(64, 64) -&gt; ReLU\nLayer 3: Linear(64, out_dim)\nThis architecture is used for both the actor and critic networks in the PPO algorithm, with different output dimensions:\n\nActor: Outputs action probabilities (priority levels)\nCritic: Outputs value function estimates (single value)"
+  },
+  {
+    "objectID": "blog/Deep-RL/index.html#ppo-implementation-details",
+    "href": "blog/Deep-RL/index.html#ppo-implementation-details",
+    "title": "Cpu-Scheduling-Deep-Reinforcement-learning",
+    "section": "PPO Implementation Details",
+    "text": "PPO Implementation Details\n\nPolicy Network (Actor)\n\nDetermines probability distribution over priority levels\nUses a diagonal covariance matrix for action sampling\nOutputs mean values for the MultivariateNormal distribution\n\nValue Network (Critic)\n\nEstimates the value function (V(s))\nUsed for computing advantages and reducing variance"
+  },
+  {
+    "objectID": "blog/Deep-RL/index.html#training-strategy",
+    "href": "blog/Deep-RL/index.html#training-strategy",
+    "title": "Cpu-Scheduling-Deep-Reinforcement-learning",
+    "section": "Training Strategy",
+    "text": "Training Strategy\nThe model is trained sequentially on five different datasets, with each dataset containing different process patterns. This approach helps in:\n\nBuilding general scheduling policies\nAvoiding overfitting to specific process patterns\nTesting the model’s adaptability to different workloads\n\nThe training process includes:\n\n10,000 steps per dataset\nPerformance tracking using Weights & Biases (wandb)\nMetrics logging including actor loss, critic loss, episode rewards, and policy entropy"
+  },
+  {
+    "objectID": "blog/Deep-RL/index.html#performance-monitoring",
+    "href": "blog/Deep-RL/index.html#performance-monitoring",
+    "title": "Cpu-Scheduling-Deep-Reinforcement-learning",
+    "section": "Performance Monitoring",
+    "text": "Performance Monitoring"
+  },
+  {
+    "objectID": "blog/Deep-RL/index.html#implementation-challenges-and-solutions",
+    "href": "blog/Deep-RL/index.html#implementation-challenges-and-solutions",
+    "title": "Cpu-Scheduling-Deep-Reinforcement-learning",
+    "section": "Implementation Challenges and Solutions",
+    "text": "Implementation Challenges and Solutions\n\nState Representation\n\nChallenge: Representing variable-length process queues\nSolution: Fixed-size observation matrix with padding\n\nReward Design\n\nChallenge: Balancing throughput vs turnaround time\nSolution: Weighted combination of completed processes and turnaround times\n\nAction Space\n\nChallenge: Continuous vs discrete actions for priorities\nSolution: Discrete action space with fixed priority levels"
+  },
+  {
+    "objectID": "blog/Deep-RL/index.html#future-improvements",
+    "href": "blog/Deep-RL/index.html#future-improvements",
+    "title": "Cpu-Scheduling-Deep-Reinforcement-learning",
+    "section": "Future Improvements",
+    "text": "Future Improvements\n\nArchitecture Enhancements\n\nImplement attention mechanisms for better context processing\nAdd prioritized experience replay\nExperiment with different network architectures\n\nTraining Optimizations\n\nImplement parallel environment processing\nAdd curriculum learning for progressive difficulty\nExperiment with different advantage estimation methods (GAE)"
+  },
+  {
+    "objectID": "blog/Deep-RL/index.html#conclusion",
+    "href": "blog/Deep-RL/index.html#conclusion",
+    "title": "Cpu-Scheduling-Deep-Reinforcement-learning",
+    "section": "Conclusion",
+    "text": "Conclusion\nThis implementation demonstrates the potential of using DRL, specifically PPO, for process scheduling. The combination of custom environment design, careful hyperparameter tuning, and comprehensive monitoring creates a robust learning system for priority scheduling.\nThe modular design allows for easy experimentation with different network architectures and training strategies, while the integration with modern tools like wandb enables detailed performance analysis and optimization."
+  },
+  {
+    "objectID": "blog/Deep-RL/index.html#ppo-class",
+    "href": "blog/Deep-RL/index.html#ppo-class",
+    "title": "Cpu-Scheduling-Deep-Reinforcement-learning",
+    "section": "PPO Class",
+    "text": "PPO Class\nimport numpy as np\nimport torch\nimport gymnasium as gym\nfrom torch.distributions import MultivariateNormal\nfrom torch.optim import Adam\nfrom torch.nn import MSELoss\nimport wandb\nfrom neural_network import FeedForwardNN\n\nclass PPO:\ndef **init**(self, env: gym.Env, obs_enc_dim: int) -&gt; None: # Initialize environment details\nself.env = env\nself.obs_dim = env.observation_space.shape[0] \\* env.observation_space.shape[1]\nself.obs_enc_dim = obs_enc_dim\nself.act_dim = env.action_space.n\n\n        # Initialize hyperparameters and neural networks\n        self._init_hyperparameters()\n        wandb.init(\n            project=\"my-ppo-project\",\n            config={\n                \"timesteps_per_batch\": self.timesteps_per_batch,\n                \"max_timesteps_per_episode\": self.max_timesteps_per_episode,\n                \"gamma\": self.gamma,\n                \"n_updates_per_iteration\": self.n_updates_per_iteration,\n                \"clip\": self.clip,\n                \"lr\": self.lr,\n            },\n        )\n        self.actor = FeedForwardNN(self.obs_dim, self.act_dim)\n        self.critic = FeedForwardNN(self.obs_dim, 1)\n        self.actor_optim = Adam(self.actor.parameters(), lr=self.lr)\n        self.critic_optim = Adam(self.critic.parameters(), lr=self.lr)\n        self.cov_var = torch.full(size=(self.act_dim,), fill_value=0.5)\n        self.cov_mat = torch.diag(self.cov_var)\n\n    # Actor-Critic Loss Backpropagation\n    def update_networks(self, actor_loss, critic_loss):\n        # Actor loss backpropagation\n        self.actor_optim.zero_grad()\n        actor_loss.backward(retain_graph=True)\n        self.actor_optim.step()\n\n        # Critic loss backpropagation\n        self.critic_optim.zero_grad()\n        critic_loss.backward()\n        self.critic_optim.step()\n\nNeural Network Architecture\nThe implementation uses a feed-forward neural network with the following structure:\n````python import torch from torch import nn import torch.nn.functional as F import numpy as np\nclass FeedForwardNN(nn.Module): def init(self, in_dim, out_dim): super(FeedForwardNN, self).__init__()\n    self.layer1 = nn.Linear(in_dim, 64)\n    self.layer2 = nn.Linear(64, 64)\n    self.layer3 = nn.Linear(64, out_dim)\n\ndef forward(self, obs):\n    if isinstance(obs, np.ndarray):\n        obs = torch.tensor(obs, dtype=torch.float)\n\n    # todo applies relu activation to the output of the layer\n    activation1 = F.relu(self.layer1(obs))\n    activation2 = F.relu(self.layer2(activation1))\n    output = self.layer3(activation2)\n\n    return output\n```"
+  },
+  {
+    "objectID": "blog/Deep-RL/index.html#project-overview",
+    "href": "blog/Deep-RL/index.html#project-overview",
+    "title": "Cpu-Scheduling-Deep-Reinforcement-learning",
+    "section": "Project Overview",
+    "text": "Project Overview\nThis project develops a Deep Reinforcement Learning (DRL) model that optimizes CPU scheduling, aiming to reduce turnaround time and outperform the traditional Round-Robin approach. Using Proximal Policy Optimization (PPO), the model dynamically adjusts task priorities to enhance scheduling efficiency."
+  }
+]

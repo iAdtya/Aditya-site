@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://your-site-url.com/index.html</loc>
+    <lastmod>2024-11-24T18:11:43.509Z</lastmod>
+  </url>
+  <url>
+    <loc>https://your-site-url.com/about.html</loc>
+    <lastmod>2024-11-24T12:49:27.225Z</lastmod>
+  </url>
+  <url>
+    <loc>https://your-site-url.com/blog/Deep-RL/index.html</loc>
+    <lastmod>2024-11-24T18:42:51.625Z</lastmod>
+  </url>
+</urlset>
