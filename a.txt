@@ -1,0 +1,87 @@
+<!-- ## Custom Gym Environment
+
+A custom Gym environment (`PrioritySchedulerEnv`) was developed to provide a controlled setting for training the scheduling model. This environment manages processes based on their arrival time and instruction count, prioritizing them dynamically during runtime. Processes are assigned priorities from 0 to 10, reshuffled in a priority queue, and executed accordingly.
+
+The project implements a custom Gymnasium environment (`PrioritySchedulerEnv`) that simulates a priority-based process scheduler. Key features include:
+
+- **Observation Space**: A matrix of shape `(encoder_context + 1, 5)` representing:
+  - Current process information (PID, arrival time, total instructions, remaining instructions)
+  - Priority queue state for context
+- **Action Space**: Discrete actions representing priority levels (0 to max_priority-1)
+- **Reward Function**: `100 * completed_processes - sum(turnaround_times)`
+
+  - Balances throughput (completed processes) with turnaround time optimization
+
+- The reward function is designed to encourage two main behaviors:
+
+- High throughput: Complete as many processes as possible (the +100 points per completion)
+- Low latency: Complete them as quickly as possible (the penalty based on turnaround time)
+
+- It's like a balancing act - the scheduler needs to:
+
+- Complete lots of processes (to get the +100 point bonuses)
+- But do it quickly (to avoid big turnaround time penalties)
+- Make smart decisions about which process to run when (through priority assignment)
+
+### PriorityQueue structure
+
+(priority_level, process_data)
+
+Example:
+
+Priority 2, PID 0, 8 instructions remaining
+
+- (2, [0, 1, 10, 8])
+- (5, [1, 3, 8, 8])
+- (3, [2, 7, 12, 12])
+
+**Probability and Action Selection with Multivariate Normal Distribution**
+
+In this project, PPO models policy distributions over actions, allowing for probability-based action selection. A multivariate normal distribution is applied to the action space, leveraging a covariance matrix to encourage diverse actions while maintaining stability.
+
+**Priority Assignment and Queueing**
+
+Processes are assigned priorities (0-10) that determine their positions in the priority queue. This priority directly influences execution order, allowing the model to adaptively reshuffle processes for optimal performance based on real-time feedback.
+
+**Reward Model**
+
+The reward model in this environment incentivizes quick completion of processes. Rewards are structured as:
+
+- **Positive Reward:** Granted for completed processes.
+- **Penalty:** Incurred based on the sum of turnaround times for completed processes.
+
+Throughput Bonus: 100 \* len(self.completed_processes)
+
+Each completed process adds 100 points
+Encourages completing more processes
+
+Latency Penalty: -sum(p[1] for p in self.completed_processes)
+
+Subtracts total turnaround time
+Penalizes longer processing times
+
+**reward model is penalizing longer turnaround times effectively**
+
+- Lower turnaround times (quicker completions) lead to higher rewards.
+- Higher turnaround times result in lower rewards.
+
+#### Scenario 1
+
+completed_processes = [
+(0, 5), # PID 0, turnaround time 5
+(1, 6) # PID 1, turnaround time 6
+]
+reward = (2 \* 100) - (5 + 6)
+
+**reward = 200 - 11 = 189**
+
+#### Scenario 2: Slow Completion
+
+completed_processes = [
+(0, 15), # PID 0, turnaround time 15
+(1, 18) # PID 1, turnaround time 18
+]
+reward = (2 \* 100) - (15 + 18)
+
+**reward = 200 - 33 = 167**
+ -->

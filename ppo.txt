@@ -1,0 +1,248 @@
+
+<!-- ## Proximal Policy Optimization (PPO)
+
+PPO is a popular DRL algorithm known for balancing sample efficiency with stability. It employs a clipped surrogate objective that prevents large policy updates, enabling stable learning. Here, PPO is central to optimizing scheduling policy, fine-tuning process priorities to minimize turnaround time.
+
+- PPO ARCHITECHTURE
+- Policy Network
+  - state - > action
+- Value Network
+
+  - state, action - > q_value (how good was the decision)
+
+- **DataStore**
+  - Agent starts processing through Policy network which o/p actions as probablity distribution
+  - we take that action
+  - Store the state, action, reward, probablity in the Datastore and we do this for every batch
+
+![policy](../../policy.png)
+
+- Future Rewards are computed recursively G_T (future rewards or Return-to-Go)
+  \[
+  G_t = r_t + \gamma G\*{t+1}
+  \]
+
+  discounted_reward = rew + (discounted_reward \* self.gamma)
+
+- In PPO, future rewards (\(G_t\)) are used to compute the advantage function (\(A_t\)):
+
+  \[
+  A_t = G_t - V(s_t)
+  \]
+
+  Here:
+
+  - \(G_t\) is the future rewards (calculated in compute_rtgs).
+  - \(V(s_t)\) is the value estimate from the critic network, calculated in evaluate.
+
+  By subtracting \(V(s_t)\) from \(G_t\), the advantage \(A_t\) tells us whether the action taken at \(s_t\) was better or worse than the policy's expected action.
+
+- Advantage
+  \[A(s,a)=Rt−V(s)\]
+
+In your PPO implementation, the **advantage** is calculated using the formula:
+
+\[
+A(s, a) = R_t - V(s)
+\]
+
+### Formula Explanation:
+
+1. **\(A(s, a)\): Advantage function**
+
+   - Measures how much better an action \(a\) is compared to the average action taken in the state \(s\), as determined by the value function.
+
+2. **\(R_t\): Future reward (rewards-to-go)**
+
+- The cumulative discounted rewards from time \(t\) onwards:
+  \[
+  R*t = \sum*{k=0}^{\infty} \gamma^k r\_{t+k}
+  \]
+- This is computed in the code by `compute_rtgs`.
+
+3. **\(V(s)\): Value function**
+   - The estimated expected return from the current state \(s\). It is obtained from the **critic network**.
+
+The **advantage** is the difference between \(R_t\) (what actually happened) and \(V(s)\) (what was expected).
+
+---
+
+### Code Section: Advantage Calculation
+
+The calculation happens in the `learn` method of the PPO class:
+
+```python
+# Calculate Advantage
+A_k = batch_rtgs - V.detach()
+```
+
+**Code breakdown:**
+
+1. **`batch_rtgs`**
+   - This is the rewards-to-go (\(R_t\)), precomputed using the `compute_rtgs` method.
+2. **`V`**
+   - The critic's estimated value (\(V(s)\)), calculated in the `evaluate` method using the line:
+     ```python
+     V = self.critic(batch_obs).squeeze()
+     ```
+3. **`detach()`**
+   - Used to stop the gradient flow through \(V(s)\), ensuring the advantage is calculated without affecting the critic's gradients.
+
+---
+
+### Where the Future Reward (\(R_t\)) is Computed:
+
+The `compute_rtgs` function calculates \(R_t\) as follows:
+
+```python
+def compute_rtgs(self, batch_rews):
+    # reawards-to-go per episode to return
+    batch_rtgs = []
+
+    # iterate through episode backwards
+    for ep_rews in reversed(batch_rews):
+        discounted_reward = 0  # running reward
+        for rew in reversed(ep_rews):
+            discounted_reward = rew + (discounted_reward * self.gamma)
+            batch_rtgs.insert(0, discounted_reward)
+
+    # convert to tensor
+    batch_rtgs = torch.tensor(batch_rtgs, dtype=torch.float)
+    return batch_rtgs
+```
+
+**Formula**:
+\[
+R*t = r_t + \gamma r*{t+1} + \gamma^2 r\_{t+2} + \dots
+\]
+
+- **Input:** Rewards from each step in the batch (`batch_rews`).
+- **Output:** A tensor of \(R_t\) for each time step, aligned with the PPO algorithm.
+
+---
+
+## LOSS
+
+**Actual Future Reward**
+
+- We calcualte actuall future reward from the data gathered In reinforcement learning, future rewards (also known as rewards-to-go or return) are typically calculated by taking the sum of the discounted rewards. This approach helps to account for the fact that rewards received in the future are usually less valuable than immediate rewards, which is why they are discounted by a factor (\gamma) (gamma).
+
+**Expected Future Reward**
+
+- we calcuate the adavantage by q_value - actuall future reward
+- loss = sum of adavantage square divided by avg gives us loss and we backpropogate this loss and the neural network learns
+
+The equation shown is the **clipped surrogate loss** used in Proximal Policy Optimization (PPO) for the policy (actor) network. Here's an explanation and the corresponding code snippets for how this loss is calculated.
+
+---
+
+### Formula Breakdown:
+
+1. **Surrogate Objective:**
+
+   - The term \( r*t(\theta) \) is the **probability ratio** between the current policy and the old policy:
+     \[
+     r_t(\theta) = \frac{\pi*\theta(a*t | s_t)}{\pi*{\theta\_{\text{old}}}(a_t | s_t)}
+     \]
+
+   This measures how much the new policy deviates from the old one.
+
+2. **Advantage Estimate:**
+
+   - \( \hat{A}\_t \) represents the **advantage** at time \(t\), calculated as:
+     \[
+     \hat{A}\_t = R_t - V(s_t)
+     \]
+     where \(R_t\) is the reward-to-go and \(V(s_t)\) is the value function for state \(s_t\).
+
+3. **Clipping:**
+
+   - PPO adds a constraint to prevent large policy updates by "clipping" \( r_t(\theta) \):
+     \[
+     \text{clip}\left( r_t(\theta), 1 - \epsilon, 1 + \epsilon \right)
+     \]
+     - \( \epsilon \): a small hyperparameter (e.g., 0.2) to control the clipping range.
+
+4. **Final Loss:**
+   - The **policy loss** is the expected minimum of:
+     \[
+     \text{min}\left( r_t(\theta) \hat{A}\_t, \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) \hat{A}\_t \right)
+     \]
+     This ensures that the policy does not deviate too much from the old one while maximizing the advantage.
+
+---
+
+### Code for Policy Loss
+
+Here’s how the loss is implemented in a typical PPO setup:
+
+```python
+# Compute probability ratios (r_t(theta))
+log_probs = self.actor(batch_obs).log_prob(batch_actions)
+old_log_probs = batch_log_probs.detach()
+ratios = torch.exp(log_probs - old_log_probs)  # r_t(theta)
+
+# Compute clipped surrogate loss
+surr1 = ratios * batch_advantages
+surr2 = torch.clamp(ratios, 1 - self.clip, 1 + self.clip) * batch_advantages
+actor_loss = -torch.mean(torch.min(surr1, surr2))  # Negative for maximization
+
+# Zero-out gradients
+self.actor_optimizer.zero_grad()
+
+# Backpropagate actor loss
+actor_loss.backward()
+
+# Update actor network
+self.actor_optimizer.step()
+```
+
+---
+
+### Code Explanation:
+
+1. **Log-Probability Calculation:**
+
+   - The policy outputs action probabilities for the current states:
+     ```python
+     log_probs = self.actor(batch_obs).log_prob(batch_actions)
+     ```
+   - `old_log_probs` are precomputed during data collection and detached to avoid gradients flowing through the old policy.
+
+2. **Probability Ratios (`ratios`):**
+
+   - The ratios are computed as:
+     \[
+     r*t(\theta) = \exp(\log \pi*\theta(a*t|s_t) - \log \pi*{\theta\_{\text{old}}}(a_t|s_t))
+     \]
+
+     ```python
+     ratios = torch.exp(log_probs - old_log_probs)
+     ```
+
+3. **Surrogate Loss (`surr1` and `surr2`):**
+
+   - \( \text{surr1} = r_t(\theta) \hat{A}\_t \): Original objective.
+   - \( \text{surr2} = \text{clip}(r_t(\theta), 1-\epsilon, 1+\epsilon) \hat{A}\_t \): Clipped objective.
+
+     ```python
+     surr1 = ratios * batch_advantages
+     surr2 = torch.clamp(ratios, 1 - self.clip, 1 + self.clip) * batch_advantages
+     ```
+
+4. **Final Loss:**
+
+   - The minimum of the two terms ensures that the policy update does not move far away from the old policy:
+     ```python
+     actor_loss = -torch.mean(torch.min(surr1, surr2))
+     ```
+
+5. **Optimization:**
+   - Gradients are backpropagated, and the actor network is updated using the computed loss:
+     ```python
+     self.actor_optimizer.zero_grad()
+     actor_loss.backward()
+     self.actor_optimizer.step()
+     ```
+
+--- -->

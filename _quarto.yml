@@ -9,7 +9,7 @@ execute:
 
 website:
   title: "Aditya's Blog"
-  site-url: "https://your-site-url.com"
+  # site-url: "https://your-site-url.com"
   page-footer:
     center:
       - icon: linkedin
@@ -29,11 +29,14 @@ website:
     left:
       - text: "Blog"
         href: index.qmd
-      - text: "Hire"
-        href: _hire.qmd
 
 format:
   html:
     theme: cosmo
     css: styles.css
     toc: true
+    math: true
+    include-in-header:
+      - text: |
+          <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+          <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

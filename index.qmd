@@ -24,13 +24,13 @@ format:
 
 ![](profile.png){.profile-pic}
 
-I am a machine learning engineer [experience](https://www.linkedin.com/in/aditya-khedekar-96b110202). I have worked with innovative companies and Products, which included. I am currently an independent consultant helping companies operationalize Large Language Models (LLMs) to accelerate their AI product journey.
+I am a Machine Learning Engineer [Experience](https://www.linkedin.com/in/aditya-khedekar-96b110202). I have worked with innovative companies and Products as a Consultant like **InTouchAPP(Advanced Rag ChatBot)**, **Burni Consulting(Speaker Diarization Techniques)** . I am currently an independent consultant helping companies operationalize Large Language Models (LLMs) to accelerate their AI product journey.
 
 :::
 
 ## 💼 Work With Me
 
-Do you need help operationalizing AI and large language models? I’m open to new consulting work and other forms of advisory. If you need help with your project lets chat [Calendly](https://calendly.com/adityakhedekar/30min)  OR   [Email me](mailto:adityakhedekar98906@gmail.com)
+Do you need help operationalizing AI and large language models? I’m open to new consulting work and other forms of advisory. If you need help with your project lets chat [Calendly](https://calendly.com/adityakhedekar/30min)  or   [Email me](mailto:adityakhedekar98906@gmail.com)
 
 ---
 
