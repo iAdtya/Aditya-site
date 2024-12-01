@@ -9,7 +9,8 @@ execute:
 
 website:
   title: "Aditya's Blog"
-  # site-url: "https://your-site-url.com"
+  site-url: "https://khedekar.tech"
+  repo-url: https://github.com/iAdtya/Aditya-site
   page-footer:
     center:
       - icon: linkedin
