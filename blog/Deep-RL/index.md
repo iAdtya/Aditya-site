@@ -11,6 +11,8 @@ format: html
 
 This project develops a Deep Reinforcement Learning (DRL) model to optimize CPU scheduling, aiming to reduce turnaround time and outperform the traditional Round-Robin algorithm. The model uses Proximal Policy Optimization (PPO) to dynamically adjust task priorities for enhanced scheduling efficiency.
 
+**Plz refer to the code for a complete picture [here](https://github.com/iAdtya/CPU-OPTIMIZATION-RL). I have only explained important concepts!**
+
 ### PPO Architecture
 
 #### Policy Network
