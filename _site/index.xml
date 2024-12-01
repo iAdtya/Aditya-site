@@ -28,6 +28,7 @@
 <section id="cpu-scheduling-with-deep-reinforcement-learning" class="level2">
 <h2 class="anchored" data-anchor-id="cpu-scheduling-with-deep-reinforcement-learning">CPU Scheduling with Deep Reinforcement Learning</h2>
 <p>This project develops a Deep Reinforcement Learning (DRL) model to optimize CPU scheduling, aiming to reduce turnaround time and outperform the traditional Round-Robin algorithm. The model uses Proximal Policy Optimization (PPO) to dynamically adjust task priorities for enhanced scheduling efficiency.</p>
+<p><strong>Plz refer to the code for a complete picture <a href="https://github.com/iAdtya/CPU-OPTIMIZATION-RL">here</a>. I have only explained important concepts!</strong></p>
 <section id="ppo-architecture" class="level3">
 <h3 class="anchored" data-anchor-id="ppo-architecture">PPO Architecture</h3>
 <section id="policy-network" class="level4">

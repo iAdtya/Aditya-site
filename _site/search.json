@@ -1,31 +1,10 @@
 [
   {
-    "objectID": "index.html#work-with-me",
-    "href": "index.html#work-with-me",
-    "title": "Aditya's Blog",
-    "section": "💼 Work With Me",
-    "text": "💼 Work With Me\nDo you need help operationalizing AI and large language models? I’m open to new consulting work and other forms of advisory. If you need help with your project lets chat Calendly or Email me"
-  },
-  {
-    "objectID": "index.html#feed",
-    "href": "index.html#feed",
-    "title": "Aditya's Blog",
-    "section": "📮 Feed",
-    "text": "📮 Feed\nI often share my experience building AI products. Below is a selected assortment of my longer-form writing on my machine learning work.\n\n\n    \n      \n      \n    \n\n\n\n\n\nDate\n\n\nTitle\n\n\n\n\n\n\n11/7/24\n\n\nCPU Scheduling with Deep Reinforcement Learning\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "index.html#follow-me",
-    "href": "index.html#follow-me",
-    "title": "Aditya's Blog",
-    "section": "📬 Follow Me",
-    "text": "📬 Follow Me\nYou can subscribe to my blog via the button below. I’m also active on Twitter."
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "README.html",
+    "href": "README.html",
+    "title": "This is my Consulting website if you like my blogs and wanna work with me feel free to schedule call from the above link!!",
     "section": "",
-    "text": "About this site"
+    "text": "This is my Consulting website if you like my blogs and wanna work with me feel free to schedule call from the above link!!"
   },
   {
     "objectID": "blog/Deep-RL/index.html",
@@ -39,7 +18,7 @@
     "href": "blog/Deep-RL/index.html#cpu-scheduling-with-deep-reinforcement-learning",
     "title": "CPU Scheduling with Deep Reinforcement Learning",
     "section": "CPU Scheduling with Deep Reinforcement Learning",
-    "text": "CPU Scheduling with Deep Reinforcement Learning\nThis project develops a Deep Reinforcement Learning (DRL) model to optimize CPU scheduling, aiming to reduce turnaround time and outperform the traditional Round-Robin algorithm. The model uses Proximal Policy Optimization (PPO) to dynamically adjust task priorities for enhanced scheduling efficiency.\n\nPPO Architecture\n\nPolicy Network\n\nInput: Current state \\(s_t\\)\nOutput: Action probabilities \\(pi(a_t / s_t)\\)\n\n\n\nValue Network\n\nInput: Current state \\(s_t\\) \\(a_t\\)\nOutput: Value estimate \\(V(s_t)\\)\n\n\n\nData Store\n\nThe agent processes the environment through the policy network, producing a probability distribution over actions.\nSelected actions, states, rewards, and probabilities, are stored in a data store for every batch."
+    "text": "CPU Scheduling with Deep Reinforcement Learning\nThis project develops a Deep Reinforcement Learning (DRL) model to optimize CPU scheduling, aiming to reduce turnaround time and outperform the traditional Round-Robin algorithm. The model uses Proximal Policy Optimization (PPO) to dynamically adjust task priorities for enhanced scheduling efficiency.\nPlz refer to the code for a complete picture here. I have only explained important concepts!\n\nPPO Architecture\n\nPolicy Network\n\nInput: Current state \\(s_t\\)\nOutput: Action probabilities \\(pi(a_t / s_t)\\)\n\n\n\nValue Network\n\nInput: Current state \\(s_t\\) \\(a_t\\)\nOutput: Value estimate \\(V(s_t)\\)\n\n\n\nData Store\n\nThe agent processes the environment through the policy network, producing a probability distribution over actions.\nSelected actions, states, rewards, and probabilities, are stored in a data store for every batch."
   },
   {
     "objectID": "blog/Deep-RL/index.html#future-rewards-calculation",
@@ -82,5 +61,33 @@
     "title": "CPU Scheduling with Deep Reinforcement Learning",
     "section": "Formula",
     "text": "Formula\n\\[\n\\pi(a_t | s_t) = \\frac{1}{\\sqrt{(2\\pi)^k |\\Sigma|}} \\exp\\left(-\\frac{1}{2}(a_t - \\mu)^T \\Sigma^{-1} (a_t - \\mu)\\right)\n\\]\nWhere:\n\n\\(mu\\): Mean vector (policy’s output).\n\\(Sigma\\): Covariance matrix.\n\n\nCode: Action Sampling\n    def get_action(self, obs):\n        # encode the observations and query the actor for mean action\n        # obs = self.obs_enc(obs)\n        mean = self.actor(obs)\n\n        # create multivariate normal distribution\n        dist = MultivariateNormal(mean, self.cov_mat)\n\n        # sample action from distribution\n        action = dist.sample()\n        log_prob = dist.log_prob(action)\n\n        # return detached action and log prob\n        return action.detach().numpy(), log_prob.detach().numpy()\n\n\nEnvironment Initialization\nThe environment initializes with the following:\n\nProcesses: A batch of random processes with arrival times and instruction counts.\nPriority Queue: Starts empty, populated dynamically during runtime.\n\n\nCode: Initialization\ndef reset(self):\n    self.priority_queue = []\n    self.completed_processes = []\n    self.current_time = 0\n\n    # Generate random processes\n    self.processes = [\n        [i, np.random.randint(0, 10), np.random.randint(5, 15), np.random.randint(5, 15)]\n        for i in range(self.encoder_context + 1)\n    ]\n    self.current_process = self.processes.pop(0)\n    return self.get_observation()\n\n\n\n\nResult\nThis way we can Train a Deep-RL Model to outperform classic algorithms like round robin.\n\n\n\nStats"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "index.html#work-with-me",
+    "href": "index.html#work-with-me",
+    "title": "Aditya's Blog",
+    "section": "💼 Work With Me",
+    "text": "💼 Work With Me\nDo you need help operationalizing AI and large language models? I’m open to new consulting work and other forms of advisory. If you need help with your project lets chat Calendly or Email me"
+  },
+  {
+    "objectID": "index.html#feed",
+    "href": "index.html#feed",
+    "title": "Aditya's Blog",
+    "section": "📮 Feed",
+    "text": "📮 Feed\nI often share my experience building AI products. Below is a selected assortment of my longer-form writing on my machine learning work.\n\n\n    \n      \n      \n    \n\n\n\n\n\nDate\n\n\nTitle\n\n\n\n\n\n\n11/7/24\n\n\nCPU Scheduling with Deep Reinforcement Learning\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "index.html#follow-me",
+    "href": "index.html#follow-me",
+    "title": "Aditya's Blog",
+    "section": "📬 Follow Me",
+    "text": "📬 Follow Me\nYou can subscribe to my blog via the button below. I’m also active on Twitter."
   }
 ]

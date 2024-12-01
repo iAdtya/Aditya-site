@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="A collection of technical blogs and talks on machine learning and data science.">
 
-<title>Aditya’s Blog</title>
+<title>readme – Aditya's Blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +29,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -68,35 +65,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-blog-listings .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-blog-listings'] = new List('listing-blog-listings', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
@@ -141,7 +109,7 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="styles.css">
-<link rel="alternate" type="application/rss+xml" title="Aditya's Blog" href="index.xml" data-external="1"></head>
+</head>
 
 <body class="nav-fixed">
 
@@ -151,7 +119,7 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
           <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Blog</span></a>
   </li>  
 </ul>
@@ -170,9 +138,7 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#work-with-me" id="toc-work-with-me" class="nav-link active" data-scroll-target="#work-with-me">💼 Work With Me</a></li>
-  <li><a href="#feed" id="toc-feed" class="nav-link" data-scroll-target="#feed">📮 Feed</a></li>
-  <li><a href="#follow-me" id="toc-follow-me" class="nav-link" data-scroll-target="#follow-me">📬 Follow Me</a></li>
+  <li><a href="#this-is-my-consulting-website-if-you-like-my-blogs-and-wanna-work-with-me-feel-free-to-schedule-call-from-the-above-link" id="toc-this-is-my-consulting-website-if-you-like-my-blogs-and-wanna-work-with-me-feel-free-to-schedule-call-from-the-above-link" class="nav-link active" data-scroll-target="#this-is-my-consulting-website-if-you-like-my-blogs-and-wanna-work-with-me-feel-free-to-schedule-call-from-the-above-link">This is my Consulting website if you like my blogs and wanna work with me feel free to schedule call from the above link!!</a></li>
   </ul>
 </nav>
     </div>
@@ -182,65 +148,8 @@ window.Quarto = {
 
 
 
-<div>
-
-</div>
-<div class="profile-header quarto-layout-panel" data-layout="[21,79]">
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 21.0%;justify-content: center;">
-<p><img src="profile.png" class="profile-pic img-fluid"></p>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 79.0%;justify-content: flex-start;">
-<p>I am a Machine Learning Engineer <a href="https://www.linkedin.com/in/aditya-khedekar-96b110202">Experience</a>. I have worked with innovative companies and Products as a Consultant like <strong>InTouchAPP(Advanced Rag ChatBot)</strong>, <strong>Burni Consulting(Speaker Diarization Techniques)</strong> . I am currently an independent consultant helping companies operationalize Large Language Models (LLMs) to accelerate their AI product journey.</p>
-</div>
-</div>
-</div>
-<section id="work-with-me" class="level2">
-<h2 class="anchored" data-anchor-id="work-with-me">💼 Work With Me</h2>
-<p>Do you need help operationalizing AI and large language models? I’m open to new consulting work and other forms of advisory. If you need help with your project lets chat <a href="https://calendly.com/adityakhedekar/30min">Calendly</a> or <a href="mailto:adityakhedekar98906@gmail.com">Email me</a></p>
-<hr>
-</section>
-<section id="feed" class="level2">
-<h2 class="anchored" data-anchor-id="feed">📮 Feed</h2>
-<p>I often share my experience building AI products. Below is a selected assortment of my longer-form writing on my machine learning work.</p>
-<div id="listing-blog-listings" class="quarto-listing quarto-listing-container-table">
-<div class="listing-actions-group">
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
-</div>
-<table class="quarto-listing-table table">
-<thead>
-<tr>
-<th>
-Date
-</th>
-<th>
-Title
-</th>
-</tr>
-</thead>
-<tbody class="list">
-<tr data-index="0" data-listing-date-sort="1730917800000" data-listing-file-modified-sort="1733070225838" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1768" data-listing-title-sort="CPU Scheduling with Deep Reinforcement Learning" data-listing-filename-sort="index.md">
-<td>
-<span class="listing-date">11/7/24</span>
-</td>
-<td>
-<a href="./blog/Deep-RL/index.html" class="title listing-title">CPU Scheduling with Deep Reinforcement Learning</a>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div>
-</section>
-<section id="follow-me" class="level2">
-<h2 class="anchored" data-anchor-id="follow-me">📬 Follow Me</h2>
-<p>You can subscribe to my blog via the button below. I’m also active on <a href="https://x.com/Aditya38763529">Twitter</a>.</p>
-
+<section id="this-is-my-consulting-website-if-you-like-my-blogs-and-wanna-work-with-me-feel-free-to-schedule-call-from-the-above-link" class="level1">
+<h1>This is my Consulting website if you like my blogs and wanna work with me feel free to schedule call from the above link!!</h1>
 
 
 
