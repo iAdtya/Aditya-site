@@ -1,0 +1,926 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Aditya&#39;s Blog</title>
+<link>https://khedekar.tech/</link>
+<atom:link href="https://khedekar.tech/index.xml" rel="self" type="application/rss+xml"/>
+<description>A collection of technical blogs and talks on machine learning and data science.</description>
+<image>
+<url>https://khedekar.tech/quarto.png</url>
+<title>Aditya&#39;s Blog</title>
+<link>https://khedekar.tech/</link>
+</image>
+<generator>quarto-1.6.32</generator>
+<lastBuildDate>Wed, 06 Nov 2024 18:30:00 GMT</lastBuildDate>
+<item>
+  <title>CPU Scheduling with Deep Reinforcement Learning</title>
+  <dc:creator>Aditya Khedekar</dc:creator>
+  <link>https://khedekar.tech/blog/Deep-RL/</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="cpu-scheduling-with-deep-reinforcement-learning" class="level2">
+<h2 class="anchored" data-anchor-id="cpu-scheduling-with-deep-reinforcement-learning">CPU Scheduling with Deep Reinforcement Learning</h2>
+<p>This project develops a Deep Reinforcement Learning (DRL) model to optimize CPU scheduling, aiming to reduce turnaround time and outperform the traditional Round-Robin algorithm. The model uses Proximal Policy Optimization (PPO) to dynamically adjust task priorities for enhanced scheduling efficiency.</p>
+<section id="ppo-architecture" class="level3">
+<h3 class="anchored" data-anchor-id="ppo-architecture">PPO Architecture</h3>
+<section id="policy-network" class="level4">
+<h4 class="anchored" data-anchor-id="policy-network">Policy Network</h4>
+<ul>
+<li><strong>Input</strong>: Current state <img src="https://latex.codecogs.com/png.latex?s_t"></li>
+<li><strong>Output</strong>: Action probabilities <img src="https://latex.codecogs.com/png.latex?pi(a_t%20/%20s_t)"></li>
+</ul>
+</section>
+<section id="value-network" class="level4">
+<h4 class="anchored" data-anchor-id="value-network">Value Network</h4>
+<ul>
+<li><strong>Input</strong>: Current state <img src="https://latex.codecogs.com/png.latex?s_t"> <img src="https://latex.codecogs.com/png.latex?a_t"></li>
+<li><strong>Output</strong>: Value estimate <img src="https://latex.codecogs.com/png.latex?V(s_t)"></li>
+</ul>
+</section>
+<section id="data-store" class="level4">
+<h4 class="anchored" data-anchor-id="data-store">Data Store</h4>
+<ul>
+<li>The agent processes the environment through the policy network, producing a probability distribution over actions.</li>
+<li>Selected <strong>actions, states, rewards, and probabilities</strong>, are stored in a data store for every batch.</li>
+</ul>
+<hr>
+</section>
+</section>
+</section>
+<section id="future-rewards-calculation" class="level2">
+<h2 class="anchored" data-anchor-id="future-rewards-calculation">Future Rewards Calculation</h2>
+<p>Future rewards, also known as <strong>Return-to-Go</strong> are computed recursively as: <img src="https://latex.codecogs.com/png.latex?G*t%20=%20r_t%20+%20%5Cgamma%20G*%7Bt+1%7D"></p>
+<p>This is implemented using the cumulative discounted reward formula:</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1">discounted_reward <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> rew <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> (discounted_reward <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.gamma)</span></code></pre></div>
+<p><strong>Expanded Formula</strong>: <img src="https://latex.codecogs.com/png.latex?G*t%20=%20r_t%20+%20%5Cgamma%20r*%7Bt+1%7D%20+%20%5Cgamma%5E2%20r%5C_%7Bt+2%7D%20+%20%5Cdots"></p>
+<section id="code-implementation" class="level3">
+<h3 class="anchored" data-anchor-id="code-implementation">Code Implementation</h3>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> compute_rtgs(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>, batch_rews):</span>
+<span id="cb2-2">    batch_rtgs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> []</span>
+<span id="cb2-3">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> ep_rews <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">reversed</span>(batch_rews):</span>
+<span id="cb2-4">        discounted_reward <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb2-5">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> rew <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">reversed</span>(ep_rews):</span>
+<span id="cb2-6">            discounted_reward <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> rew <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> (discounted_reward <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.gamma)</span>
+<span id="cb2-7">            batch_rtgs.insert(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, discounted_reward)</span>
+<span id="cb2-8">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> torch.tensor(batch_rtgs, dtype<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>torch.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>)</span></code></pre></div>
+<hr>
+</section>
+</section>
+<section id="advantage-function" class="level2">
+<h2 class="anchored" data-anchor-id="advantage-function">Advantage Function</h2>
+<p>The advantage function measures how much better an action <img src="https://latex.codecogs.com/png.latex?a_t"> is compared to the expected policy behavior: <img src="https://latex.codecogs.com/png.latex?A_t%20=%20G_t%20-%20V(s_t)"></p>
+<ul>
+<li><img src="https://latex.codecogs.com/png.latex?G_t">: Future rewards, computed in the <code>compute_rtgs</code> method.</li>
+<li><img src="https://latex.codecogs.com/png.latex?V(s_t)">: Value estimate obtained from the critic network.</li>
+</ul>
+<section id="advantage-calculation" class="level3">
+<h3 class="anchored" data-anchor-id="advantage-calculation">Advantage Calculation</h3>
+<p>Advantage is computed in the PPO <code>learn</code> method:</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Calculate Advantage</span></span>
+<span id="cb3-2">A_k <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> batch_rtgs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> V.detach()</span></code></pre></div>
+<ul>
+<li><strong><code>batch_rtgs</code></strong>: Precomputed future rewards using <code>compute_rtgs</code>.</li>
+<li><strong><code>V.detach()</code></strong>: Ensures the critic network’s gradients do not interfere with the calculation.</li>
+</ul>
+</section>
+<section id="code-implementation-1" class="level3">
+<h3 class="anchored" data-anchor-id="code-implementation-1">Code Implementation</h3>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># todo Generalized Advantage Estimation GAE is a method to estimate the advantage function, which represents how much better an action is compared to the average action in a given state</span></span>
+<span id="cb4-2">V, _ <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.evaluate(batch_obs, batch_acts)</span>
+<span id="cb4-3"></span>
+<span id="cb4-4"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> evaluate(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>, batch_obs, batch_acts):</span>
+<span id="cb4-5">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># query critic network for value V for each obs in batch_obs after encoding</span></span>
+<span id="cb4-6">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># batch_obs = self.obs_enc(batch_obs)</span></span>
+<span id="cb4-7">        V <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.critic(batch_obs).squeeze()</span>
+<span id="cb4-8">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># print('eval', V.detach().shape)</span></span>
+<span id="cb4-9"></span>
+<span id="cb4-10">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># get log probabilities</span></span>
+<span id="cb4-11">        mean <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.actor(batch_obs)</span>
+<span id="cb4-12">        dist <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> MultivariateNormal(mean, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.cov_mat)</span>
+<span id="cb4-13">        log_probs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dist.log_prob(batch_acts)</span>
+<span id="cb4-14">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> V, log_probs</span></code></pre></div>
+<hr>
+</section>
+</section>
+<section id="clipped-surrogate-loss" class="level2">
+<h2 class="anchored" data-anchor-id="clipped-surrogate-loss">Clipped Surrogate Loss</h2>
+<p>The <strong>clipped surrogate loss</strong> ensures stable policy updates by constraining deviations from the previous policy.</p>
+<section id="key-components" class="level3">
+<h3 class="anchored" data-anchor-id="key-components">Key Components</h3>
+<p><strong>Probability Ratio <img src="https://latex.codecogs.com/png.latex?r_t(%5Ctheta)"></strong>: <img src="https://latex.codecogs.com/png.latex?r*t(%5Ctheta)%20=%20%5Cfrac%7B%5Cpi*%5Ctheta(a*t%20%7C%20s_t)%7D%7B%5Cpi*%7B%5Ctheta%5C_%7B%5Ctext%7Bold%7D%7D%7D(a_t%20%7C%20s_t)%7D"></p>
+<p><strong>Clipping Constraint</strong>: <img src="https://latex.codecogs.com/png.latex?%5Ctext%7Bclip%7D%5Cleft(%20r_t(%5Ctheta),%201-%5Cepsilon,%201+%5Cepsilon%20%5Cright)"></p>
+<p><strong>Objective Function</strong>: <img src="https://latex.codecogs.com/png.latex?%5Cmathcal%7BL%7D%5E%5Ctext%7BCLIP%7D%20=%20%5Cmathbb%7BE%7D%5Cleft%5B%20%5Cmin%5Cleft(r_t(%5Ctheta)%20A_t,%20%5Ctext%7Bclip%7D(r_t(%5Ctheta),%201-%5Cepsilon,%201+%5Cepsilon)%20A_t%5Cright)%20%5Cright%5D"></p>
+<hr>
+</section>
+</section>
+<section id="policy-loss" class="level2">
+<h2 class="anchored" data-anchor-id="policy-loss">Policy Loss</h2>
+<p>The actor network uses the clipped surrogate loss for optimization:</p>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Compute probability ratios</span></span>
+<span id="cb5-2">log_probs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.actor(batch_obs).log_prob(batch_actions)</span>
+<span id="cb5-3">old_log_probs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> batch_log_probs.detach()</span>
+<span id="cb5-4">ratios <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.exp(log_probs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> old_log_probs)</span>
+<span id="cb5-5"></span>
+<span id="cb5-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Clipped surrogate loss</span></span>
+<span id="cb5-7">surr1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> ratios <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> batch_advantages</span>
+<span id="cb5-8">surr2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.clamp(ratios, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.clip, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.clip) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> batch_advantages</span>
+<span id="cb5-9">actor_loss <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>torch.mean(torch.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">min</span>(surr1, surr2))</span>
+<span id="cb5-10"></span>
+<span id="cb5-11"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Backpropagate and optimize</span></span>
+<span id="cb5-12"><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.actor_optimizer.zero_grad()</span>
+<span id="cb5-13">actor_loss.backward()</span>
+<span id="cb5-14"><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.actor_optimizer.step()</span></code></pre></div>
+<section id="explanation" class="level3">
+<h3 class="anchored" data-anchor-id="explanation">Explanation</h3>
+<p><strong>Log-Probabilities</strong>:</p>
+<ul>
+<li>Current policy: <img src="https://latex.codecogs.com/png.latex?%5Clog%20%5Cpi%5C_%5Ctheta(a_t%20%7C%20s_t)"></li>
+<li>Old policy: <img src="https://latex.codecogs.com/png.latex?%5Clog%20%5Cpi*%7B%5Ctheta*%7B%5Ctext%7Bold%7D%7D%7D(a_t%20%7C%20s_t)"></li>
+</ul>
+<p><strong>Probability Ratios</strong>: <img src="https://latex.codecogs.com/png.latex?r*t(%5Ctheta)%20=%20%5Cexp(%5Clog%20%5Cpi*%5Ctheta%20-%20%5Clog%20%5Cpi*%7B%5Ctheta*%7B%5Ctext%7Bold%7D%7D%7D)"></p>
+<p><strong>Surrogate Objectives</strong>:</p>
+<ul>
+<li>Original objective: <img src="https://latex.codecogs.com/png.latex?r_t(%5Ctheta)%20A_t"></li>
+<li>Clipped objective: <img src="https://latex.codecogs.com/png.latex?%5Ctext%7Bclip%7D(r_t(%5Ctheta),%201-%5Cepsilon,%201+%5Cepsilon)%20A_t"></li>
+</ul>
+<p><strong>Loss Minimization</strong>:</p>
+<ul>
+<li>The minimum of these ensures stability during training: <img src="https://latex.codecogs.com/png.latex?%5Ctext%7BLoss%7D%20=%20-%5Cmathbb%7BE%7D%5Cleft%5B%5Cmin%5Cleft(r_t(%5Ctheta)%20A_t,%20%5Ctext%7Bclip%7D(r_t(%5Ctheta),%201-%5Cepsilon,%201+%5Cepsilon)%20A_t%5Cright)%5Cright%5D"></li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="loss-optimization" class="level2">
+<h2 class="anchored" data-anchor-id="loss-optimization">Loss Optimization</h2>
+<p>The actor network updates using the calculated loss:</p>
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.actor_optimizer.zero_grad()</span>
+<span id="cb6-2">actor_loss.backward()</span>
+<span id="cb6-3"><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.actor_optimizer.step()</span></code></pre></div>
+<p>The critic network is trained similarly, minimizing the squared error between <img src="https://latex.codecogs.com/png.latex?G_t"> and <img src="https://latex.codecogs.com/png.latex?V(s_t)">.</p>
+<hr>
+<section id="neural-network-architecture" class="level3">
+<h3 class="anchored" data-anchor-id="neural-network-architecture">Neural Network Architecture</h3>
+<p>The implementation uses a feed-forward neural network with the following structure:</p>
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> torch</span>
+<span id="cb7-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> torch <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> nn</span>
+<span id="cb7-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> torch.nn.functional <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> F</span>
+<span id="cb7-4"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb7-5"></span>
+<span id="cb7-6"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> FeedForwardNN(nn.Module):</span>
+<span id="cb7-7">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__init__</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>, in_dim, out_dim):</span>
+<span id="cb7-8">        <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">super</span>(FeedForwardNN, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>).<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__init__</span>()</span>
+<span id="cb7-9"></span>
+<span id="cb7-10">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.layer1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> nn.Linear(in_dim, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">64</span>)</span>
+<span id="cb7-11">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.layer2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> nn.Linear(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">64</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">64</span>)</span>
+<span id="cb7-12">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.layer3 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> nn.Linear(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">64</span>, out_dim)</span>
+<span id="cb7-13"></span>
+<span id="cb7-14">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> forward(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>, obs):</span>
+<span id="cb7-15">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">isinstance</span>(obs, np.ndarray):</span>
+<span id="cb7-16">            obs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> torch.tensor(obs, dtype<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>torch.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>)</span>
+<span id="cb7-17"></span>
+<span id="cb7-18">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># todo applies relu activation to the output of the layer</span></span>
+<span id="cb7-19">        activation1 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> F.relu(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.layer1(obs))</span>
+<span id="cb7-20">        activation2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> F.relu(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.layer2(activation1))</span>
+<span id="cb7-21">        output <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.layer3(activation2)</span>
+<span id="cb7-22"></span>
+<span id="cb7-23">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> output</span></code></pre></div>
+</section>
+<section id="custom-gym-environment-priorityschedulerenv" class="level3">
+<h3 class="anchored" data-anchor-id="custom-gym-environment-priorityschedulerenv">Custom Gym Environment (<code>PrioritySchedulerEnv</code>)</h3>
+<p>The custom environment models a <strong>priority-based process scheduler</strong> where processes are dynamically managed based on their <strong>arrival time</strong>, <strong>instruction count</strong>, and <strong>assigned priority</strong>. This environment provides structured data for PPO to learn effective scheduling strategies.</p>
+<hr>
+</section>
+<section id="observation-space" class="level3">
+<h3 class="anchored" data-anchor-id="observation-space">Observation Space</h3>
+<p>The observation space is a <strong>matrix</strong> of shape <code>(encoder_context + 1, 5)</code>. It provides the agent with state information, including:</p>
+<ul>
+<li><strong>Current process</strong>: <img src="https://latex.codecogs.com/png.latex?%5Ctext%7BPID%7D,%20%5Ctext%7Barrival%20time%7D,%20%5Ctext%7Btotal%20instructions%7D,%20%5Ctext%7Bremaining%20instructions%7D"></li>
+<li><strong>Priority queue</strong> state for the current scheduling context.</li>
+</ul>
+<section id="code" class="level4">
+<h4 class="anchored" data-anchor-id="code">Code</h4>
+<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> gymnasium <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> gym</span>
+<span id="cb8-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb8-3"></span>
+<span id="cb8-4"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">class</span> PrioritySchedulerEnv(gym.Env):</span>
+<span id="cb8-5">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__init__</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>, encoder_context<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, max_priority<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>):</span>
+<span id="cb8-6">        <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">super</span>().<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">__init__</span>()</span>
+<span id="cb8-7">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.encoder_context <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> encoder_context</span>
+<span id="cb8-8">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.max_priority <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> max_priority</span>
+<span id="cb8-9"></span>
+<span id="cb8-10">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Observation space: (encoder_context + 1 processes, 5 features each)</span></span>
+<span id="cb8-11">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.observation_space <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> gym.spaces.Box(</span>
+<span id="cb8-12">            low<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,</span>
+<span id="cb8-13">            high<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>np.inf,</span>
+<span id="cb8-14">            shape<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(encoder_context <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>),</span>
+<span id="cb8-15">            dtype<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>np.float32</span>
+<span id="cb8-16">        )</span>
+<span id="cb8-17"></span>
+<span id="cb8-18">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Action space: Assign priority levels (0 to max_priority-1)</span></span>
+<span id="cb8-19">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.action_space <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> gym.spaces.Discrete(max_priority)</span>
+<span id="cb8-20"></span>
+<span id="cb8-21">        <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.reset()</span></code></pre></div>
+<hr>
+</section>
+</section>
+<section id="action-space" class="level3">
+<h3 class="anchored" data-anchor-id="action-space">Action Space</h3>
+<p>The <strong>action space</strong> is discrete, representing the priority levels that can be assigned to processes. The range is <img src="https://latex.codecogs.com/png.latex?(0)"> to <strong>{max_priority} - 1</strong>.</p>
+<hr>
+</section>
+<section id="reward-function" class="level3">
+<h3 class="anchored" data-anchor-id="reward-function">Reward Function</h3>
+<p>The reward function balances <strong>high throughput</strong> and <strong>low turnaround times</strong>:</p>
+<ul>
+<li><strong>Positive Reward</strong>: <img src="https://latex.codecogs.com/png.latex?100%20%5Ctimes%20%5Ctext%7Bcompleted%20processes%7D"></li>
+<li><strong>Penalty</strong>: <img src="https://latex.codecogs.com/png.latex?-%5Ctext%7Bsum(turnaround%20times)%7D"></li>
+</ul>
+<section id="formula-reward-function" class="level4">
+<h4 class="anchored" data-anchor-id="formula-reward-function">Formula: Reward Function</h4>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Ctext%7BReward%7D%20=%20100%20%5Ctimes%20%5Ctext%7Blen(completed%20processes)%7D%20-%20%5Csum(%5Ctext%7Bturnaround%20times%7D)%0A"></p>
+<p><strong>This encourages the agent to</strong>:</p>
+<ol type="1">
+<li>Maximize completed processes.</li>
+<li>Minimize the turnaround time for each process.</li>
+</ol>
+</section>
+</section>
+<section id="code-reward-function" class="level3">
+<h3 class="anchored" data-anchor-id="code-reward-function">Code: Reward Function</h3>
+<div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> calculate_reward(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>):</span>
+<span id="cb9-2">    throughput_bonus <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.completed_processes)</span>
+<span id="cb9-3">    latency_penalty <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>(p[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> p <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.completed_processes)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Sum of turnaround times</span></span>
+<span id="cb9-4">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> throughput_bonus <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> latency_penalty</span></code></pre></div>
+<section id="example-scenarios" class="level4">
+<h4 class="anchored" data-anchor-id="example-scenarios">Example Scenarios</h4>
+<ul>
+<li><p>Fast Completion:</p>
+<ul>
+<li>Completed Processes: <code>[(0, 5), (1, 6)]</code></li>
+<li>Reward: <img src="https://latex.codecogs.com/png.latex?200%20-%20(5%20+%206)%20=%20189"></li>
+</ul></li>
+<li><p>Slow Completion:</p>
+<ul>
+<li>Completed Processes: <code>[(0, 15), (1, 18)]</code></li>
+<li>Reward: <img src="https://latex.codecogs.com/png.latex?200%20-%20(15%20+%2018)%20=%20167"></li>
+</ul></li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="priority-queue-structure" class="level3">
+<h3 class="anchored" data-anchor-id="priority-queue-structure">Priority Queue Structure</h3>
+<p>Processes are managed in a <strong>priority queue</strong>:<img src="https://latex.codecogs.com/png.latex?%7Bpriority%7D,%20%5B%5Ctext%7BPID%7D,%20%5Ctext%7Barrival%20time%7D,%20%5Ctext%7Btotal%20instructions%7D,%20%5Ctext%7Bremaining%20instructions%7D%5D"></p>
+<div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.execution_queue.put(</span>
+<span id="cb10-2">    (assign_priority, (<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.processes[<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.data_pointer]))</span>
+<span id="cb10-3">)</span></code></pre></div>
+<ul>
+<li><p>assign_priority: This value is determined based on the output of the PPO algorithm (using the provided action). self.processes[self.data_pointer]: Contains the process details such as PID, arrival time, instructions, and remaining instructions. Sorting by Priority: The PriorityQueue ensures processes are sorted automatically based on priority, with lower values representing higher priority.</p></li>
+<li><p>self.processes[self.data_pointer]: Contains the process details such as PID, arrival time, instructions, and remaining instructions.</p></li>
+<li><p>The PriorityQueue ensures processes are sorted automatically based on priority, with lower values representing higher priority</p></li>
+</ul>
+<section id="example-queue" class="level4">
+<h4 class="anchored" data-anchor-id="example-queue">Example Queue</h4>
+<pre class="plaintext"><code>(2, [0, 1, 10, 8])  # Priority 2, PID 0, 8 instructions remaining
+(3, [2, 7, 12, 12]) # Priority 3, PID 2, 12 instructions remaining
+(5, [1, 3, 8, 8])   # Priority 5, PID 1, 8 instructions remaining</code></pre>
+<hr>
+</section>
+</section>
+<section id="step-function" class="level3">
+<h3 class="anchored" data-anchor-id="step-function">Step Function</h3>
+<p>The <strong><code>step</code> method</strong> handles environment dynamics:</p>
+<ul>
+<li>Updates process states based on the selected action (priority assignment).</li>
+<li>Manages process execution and computes rewards.</li>
+</ul>
+</section>
+<section id="code-step-method" class="level3">
+<h3 class="anchored" data-anchor-id="code-step-method">Code: Step Method</h3>
+<div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> step(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>, action):</span>
+<span id="cb12-2">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Update priority of the current process</span></span>
+<span id="cb12-3">    process <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.current_process</span>
+<span id="cb12-4">    process_priority <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> action</span>
+<span id="cb12-5">    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.add_to_queue(process, process_priority)</span>
+<span id="cb12-6"></span>
+<span id="cb12-7">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Execute the highest-priority process</span></span>
+<span id="cb12-8">    next_process <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.get_next_process()</span>
+<span id="cb12-9">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> next_process:</span>
+<span id="cb12-10">        _, process_data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> next_process</span>
+<span id="cb12-11">        process_data[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Decrement remaining instructions</span></span>
+<span id="cb12-12"></span>
+<span id="cb12-13">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> process_data[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>:  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Process completed</span></span>
+<span id="cb12-14">            <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.completed_processes.append((process_data[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>], <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.current_time <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> process_data[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]))</span>
+<span id="cb12-15"></span>
+<span id="cb12-16">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Increment time and compute reward</span></span>
+<span id="cb12-17">    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.current_time <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb12-18">    reward <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.calculate_reward()</span>
+<span id="cb12-19"></span>
+<span id="cb12-20">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Update observation (current process + priority queue context)</span></span>
+<span id="cb12-21">    observation <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.get_observation()</span>
+<span id="cb12-22">    done <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.priority_queue) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb12-23">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> observation, reward, done, {}</span></code></pre></div>
+<hr>
+</section>
+<section id="multivariate-normal-distribution" class="level3">
+<h3 class="anchored" data-anchor-id="multivariate-normal-distribution">Multivariate Normal Distribution</h3>
+<p>PPO uses a <strong>multivariate normal distribution</strong> for action selection, ensuring diverse priority assignments while preserving stability.</p>
+</section>
+</section>
+<section id="formula" class="level2">
+<h2 class="anchored" data-anchor-id="formula">Formula</h2>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cpi(a_t%20%7C%20s_t)%20=%20%5Cfrac%7B1%7D%7B%5Csqrt%7B(2%5Cpi)%5Ek%20%7C%5CSigma%7C%7D%7D%20%5Cexp%5Cleft(-%5Cfrac%7B1%7D%7B2%7D(a_t%20-%20%5Cmu)%5ET%20%5CSigma%5E%7B-1%7D%20(a_t%20-%20%5Cmu)%5Cright)%0A"></p>
+<p>Where:</p>
+<ul>
+<li><img src="https://latex.codecogs.com/png.latex?mu">: Mean vector (policy’s output).</li>
+<li><img src="https://latex.codecogs.com/png.latex?Sigma">: Covariance matrix.</li>
+</ul>
+<section id="code-action-sampling" class="level3">
+<h3 class="anchored" data-anchor-id="code-action-sampling">Code: Action Sampling</h3>
+<div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1">    <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> get_action(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>, obs):</span>
+<span id="cb13-2">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># encode the observations and query the actor for mean action</span></span>
+<span id="cb13-3">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># obs = self.obs_enc(obs)</span></span>
+<span id="cb13-4">        mean <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.actor(obs)</span>
+<span id="cb13-5"></span>
+<span id="cb13-6">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># create multivariate normal distribution</span></span>
+<span id="cb13-7">        dist <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> MultivariateNormal(mean, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.cov_mat)</span>
+<span id="cb13-8"></span>
+<span id="cb13-9">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># sample action from distribution</span></span>
+<span id="cb13-10">        action <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dist.sample()</span>
+<span id="cb13-11">        log_prob <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dist.log_prob(action)</span>
+<span id="cb13-12"></span>
+<span id="cb13-13">        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># return detached action and log prob</span></span>
+<span id="cb13-14">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> action.detach().numpy(), log_prob.detach().numpy()</span></code></pre></div>
+</section>
+<section id="environment-initialization" class="level3">
+<h3 class="anchored" data-anchor-id="environment-initialization">Environment Initialization</h3>
+<p>The environment initializes with the following:</p>
+<ul>
+<li><strong>Processes</strong>: A batch of random processes with arrival times and instruction counts.</li>
+<li><strong>Priority Queue</strong>: Starts empty, populated dynamically during runtime.</li>
+</ul>
+<section id="code-initialization" class="level4">
+<h4 class="anchored" data-anchor-id="code-initialization">Code: Initialization</h4>
+<div class="sourceCode" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> reset(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>):</span>
+<span id="cb14-2">    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.priority_queue <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> []</span>
+<span id="cb14-3">    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.completed_processes <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> []</span>
+<span id="cb14-4">    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.current_time <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span></span>
+<span id="cb14-5"></span>
+<span id="cb14-6">    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Generate random processes</span></span>
+<span id="cb14-7">    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.processes <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [</span>
+<span id="cb14-8">        [i, np.random.randint(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>), np.random.randint(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>), np.random.randint(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>)]</span>
+<span id="cb14-9">        <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.encoder_context <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb14-10">    ]</span>
+<span id="cb14-11">    <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.current_process <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.processes.pop(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span>
+<span id="cb14-12">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">self</span>.get_observation()</span></code></pre></div>
+<hr>
+</section>
+</section>
+<section id="result" class="level3">
+<h3 class="anchored" data-anchor-id="result">Result</h3>
+<p>This way we can Train a Deep-RL Model to outperform classic algorithms like round robin.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://khedekar.tech/blog/Deep-RL/turnaround.png" class="img-fluid figure-img"></p>
+<figcaption>Stats</figcaption>
+</figure>
+</div>
+<pre><code></code></pre>
+
+
+
+</section>
+</section>
+
+ ]]></description>
+  <guid>https://khedekar.tech/blog/Deep-RL/</guid>
+  <pubDate>Wed, 06 Nov 2024 18:30:00 GMT</pubDate>
+</item>
+</channel>
+</rss>
