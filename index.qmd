@@ -13,7 +13,7 @@ listing:
   categories: false
   fields: [date, title]
   id: blog-listings
-  contents: [blog/Deep-RL/index.md]
+  contents: [blog/Deep-RL/]
 aliases: ["blog/"]
 format:
   html:
