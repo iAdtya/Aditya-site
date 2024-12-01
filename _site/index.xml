@@ -17,7 +17,7 @@
 <generator>quarto-1.6.32</generator>
 <lastBuildDate>Tue, 19 Nov 2024 18:30:00 GMT</lastBuildDate>
 <item>
-  <title>Retrival Augmented Genration(RAG) with Hume-AI</title>
+  <title>Retrieval Augmented Generation(RAG) with Hume-AI</title>
   <dc:creator>Aditya Khedekar</dc:creator>
   <link>https://khedekar.tech/blog/Deep-RL/hume.html</link>
   <description><![CDATA[ 
@@ -25,9 +25,9 @@
 
 
 
-<section id="retrival-augmented-genrationrag-with-hume-ai" class="level2">
-<h2 class="anchored" data-anchor-id="retrival-augmented-genrationrag-with-hume-ai">Retrival Augmented Genration(RAG) with Hume-AI</h2>
-<p>This project attempts to implement Retrival Augmented Genration(RAG) with Function calling !!</p>
+<section id="retrieval-augmented-generationrag-with-hume-ai" class="level2">
+<h2 class="anchored" data-anchor-id="retrieval-augmented-generationrag-with-hume-ai">Retrieval Augmented Generation(RAG) with Hume-AI</h2>
+<p>This project attempts to implement Retrieval Augmented Generation(RAG) with Function calling !!</p>
 <p><strong>Checkout the complete code and live application for better understanding <a href="https://prana-client.vercel.app/" target="_blank">Live</a> <a href="https://github.com/iAdtya/prana_client" target="_blank">Github</a></strong></p>
 <section id="packages" class="level3">
 <h3 class="anchored" data-anchor-id="packages">Packages</h3>

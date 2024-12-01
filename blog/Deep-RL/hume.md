@@ -1,15 +1,15 @@
 ---
-title: "Retrival Augmented Genration(RAG) with Hume-AI"
-description: "How to implement Hume-AI Function calling to achieve Retrival Augmented Genration on private data !! "
+title: "Retrieval Augmented Generation(RAG) with Hume-AI"
+description: "How to implement Hume-AI Function calling to achieve Retrieval Augmented Generation on private data !! "
 toc-location: right-body
 author: "Aditya Khedekar"
 date: "2024-11-20"
 format: html
 ---
 
-## Retrival Augmented Genration(RAG) with Hume-AI
+## Retrieval Augmented Generation(RAG) with Hume-AI
 
-This project attempts to implement Retrival Augmented Genration(RAG) with Function calling !!
+This project attempts to implement Retrieval Augmented Generation(RAG) with Function calling !!
 
 **Checkout the complete code and live application for better understanding <a href="https://prana-client.vercel.app/" target="_blank">Live</a> <a href="https://github.com/iAdtya/prana_client" target="_blank">Github</a>**
 
